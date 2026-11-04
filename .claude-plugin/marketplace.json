@@ -1,0 +1,25 @@
+{
+  "name": "gohead",
+  "description": "gohead: scope-first coding workflow for AI agents — understand the task, change only what it needs, report blockers, verify the result.",
+  "owner": {
+    "name": "akufikri",
+    "url": "https://github.com/akufikri"
+  },
+  "plugins": [
+    {
+      "name": "gohead",
+      "description": "Scope-first coding skill: inspect before editing, keep the diff inside the task, report blockers in a fixed format, verify before claiming done.",
+      "version": "1.0.0",
+      "source": "./",
+      "skills": ["./skills/gohead"],
+      "author": {
+        "name": "akufikri",
+        "url": "https://github.com/akufikri"
+      },
+      "homepage": "https://github.com/akufikri/gohead",
+      "repository": "https://github.com/akufikri/gohead",
+      "license": "MIT",
+      "keywords": ["skills", "workflow", "scope", "coding", "steering"]
+    }
+  ]
+}
