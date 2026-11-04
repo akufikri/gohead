@@ -1,0 +1,254 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "gohead impact: what it enforces, what proves it",
+    "subtitle": "Each gate in the skill is pinned by a behavioral case in tests/run.sh",
+    "quality_profile": "showcase",
+    "output": "docs/gohead-impact.html"
+  },
+  "components": [
+    {
+      "id": "g_understand",
+      "type": "security",
+      "label": "Understand",
+      "sublabel": "goal, constraints, ambiguity",
+      "pos": [
+        40,
+        40
+      ],
+      "size": [
+        160,
+        64
+      ]
+    },
+    {
+      "id": "g_inspect",
+      "type": "backend",
+      "label": "Inspect",
+      "sublabel": "patterns, tests, conventions",
+      "pos": [
+        40,
+        136
+      ],
+      "size": [
+        160,
+        64
+      ]
+    },
+    {
+      "id": "g_decide",
+      "type": "security",
+      "label": "Decide change set",
+      "sublabel": "already done · partial · new",
+      "pos": [
+        40,
+        232
+      ],
+      "size": [
+        160,
+        64
+      ],
+      "tag": "gate 1 + 2"
+    },
+    {
+      "id": "g_verify",
+      "type": "security",
+      "label": "Verify",
+      "sublabel": "run it, re-read the diff",
+      "pos": [
+        40,
+        328
+      ],
+      "size": [
+        160,
+        64
+      ],
+      "tag": "gate 3"
+    },
+    {
+      "id": "g_report",
+      "type": "external",
+      "label": "Report shape",
+      "sublabel": "status, changes, checks",
+      "pos": [
+        40,
+        424
+      ],
+      "size": [
+        160,
+        64
+      ]
+    },
+    {
+      "id": "c_scope",
+      "type": "database",
+      "label": "scope case",
+      "sublabel": "decoy bug untouched",
+      "pos": [
+        340,
+        118
+      ],
+      "size": [
+        170,
+        64
+      ]
+    },
+    {
+      "id": "c_already",
+      "type": "database",
+      "label": "already-done case",
+      "sublabel": "0 files changed",
+      "pos": [
+        340,
+        214
+      ],
+      "size": [
+        170,
+        64
+      ]
+    },
+    {
+      "id": "c_blocker",
+      "type": "database",
+      "label": "blocker case",
+      "sublabel": "0 files, four labels",
+      "pos": [
+        340,
+        310
+      ],
+      "size": [
+        170,
+        64
+      ]
+    },
+    {
+      "id": "c_stack",
+      "type": "database",
+      "label": "stack case",
+      "sublabel": "scope held, 635 chars",
+      "pos": [
+        340,
+        424
+      ],
+      "size": [
+        170,
+        64
+      ]
+    },
+    {
+      "id": "baseline",
+      "type": "external",
+      "label": "Baseline run",
+      "sublabel": "0 of 4 labels",
+      "pos": [
+        340,
+        520
+      ],
+      "size": [
+        160,
+        64
+      ],
+      "tag": "no skill"
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "Gates in the skill",
+      "wraps": [
+        "g_understand",
+        "g_inspect",
+        "g_decide",
+        "g_verify",
+        "g_report"
+      ]
+    },
+    {
+      "kind": "region",
+      "label": "Evidence: tests/run.sh",
+      "wraps": [
+        "c_scope",
+        "c_already",
+        "c_blocker",
+        "c_stack",
+        "baseline"
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "understand_proof",
+      "from": "g_understand",
+      "to": "c_scope",
+      "label": "goal fixed",
+      "variant": "emphasis"
+    },
+    {
+      "id": "scope_proof",
+      "from": "g_inspect",
+      "to": "c_scope",
+      "label": "decoy seen",
+      "variant": "emphasis"
+    },
+    {
+      "id": "already_proof",
+      "from": "g_decide",
+      "to": "c_already",
+      "label": "proved by",
+      "variant": "emphasis"
+    },
+    {
+      "id": "blocker_proof",
+      "from": "g_verify",
+      "to": "c_blocker",
+      "label": "proved by",
+      "variant": "emphasis"
+    },
+    {
+      "id": "stack_proof",
+      "from": "g_report",
+      "to": "c_stack",
+      "label": "labels survive",
+      "variant": "emphasis"
+    },
+    {
+      "id": "contrast",
+      "from": "g_report",
+      "to": "baseline",
+      "label": "vs 0 of 4",
+      "variant": "dashed"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "emerald",
+      "title": "Measured with the skill",
+      "items": [
+        "Blocked task: 4 of 4 report labels, every sampled run",
+        "Baseline run without the skill: 0 of 4 labels",
+        "Decoy file with a pre-existing bug: untouched in every case",
+        "already-done task: 0 files changed, the answer says so",
+        "Short scoped edits: labels dropped in 2 of 4 sampled runs, so the suite reports that rate instead of gating it"
+      ]
+    },
+    {
+      "dot": "cyan",
+      "title": "Cost",
+      "items": [
+        "The skill is 4,415 bytes, about 1,104 tokens of prompt",
+        "Stacked with caveman and ponytail it is 12,589 bytes, about 3,147 tokens",
+        "Scope held and the answer stayed at 635 characters under compression"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "What the skill refuses",
+      "items": [
+        "Fixing bugs the task did not ask about",
+        "Inventing requirements or credentials a blocker is missing",
+        "Saying complete before the changed path has been run"
+      ]
+    }
+  ]
+}

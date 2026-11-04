@@ -1,0 +1,343 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "gohead: scope-first coding workflow",
+    "subtitle": "Understand, inspect, decide the change set, change, verify — and answer in a fixed shape",
+    "locale": "en",
+    "output": "docs/gohead-flow.html",
+    "quality_profile": "showcase",
+    "repository": {
+      "url": "https://github.com/akufikri/gohead",
+      "provider": "github",
+      "revision": "647bf24887a1862ccfcbbdcaccc08b5d9920723b"
+    }
+  },
+  "lanes": [
+    {
+      "id": "request",
+      "label": "Task and answer"
+    },
+    {
+      "id": "agent",
+      "label": "Agent"
+    },
+    {
+      "id": "repo",
+      "label": "Codebase"
+    },
+    {
+      "id": "gate",
+      "label": "Gates"
+    },
+    {
+      "id": "blocked",
+      "label": "Stops and exceptions",
+      "variant": "exception"
+    }
+  ],
+  "phases": [
+    {
+      "id": "understand",
+      "label": "Understand",
+      "fromCol": 0,
+      "toCol": 1
+    },
+    {
+      "id": "decide",
+      "label": "Decide the change set",
+      "fromCol": 2,
+      "toCol": 3,
+      "variant": "emphasis"
+    },
+    {
+      "id": "prove",
+      "label": "Change, verify, report",
+      "fromCol": 4,
+      "toCol": 5,
+      "variant": "dashed"
+    }
+  ],
+  "groups": [
+    {
+      "id": "hard_gates",
+      "label": "Gates that can stop the task",
+      "lane": "gate",
+      "fromCol": 2,
+      "toCol": 5,
+      "variant": "emphasis"
+    }
+  ],
+  "mainPath": [
+    "task",
+    "understand",
+    "inspect",
+    "decide",
+    "change",
+    "verify",
+    "report"
+  ],
+  "nodes": [
+    {
+      "id": "task",
+      "lane": "request",
+      "col": 0,
+      "type": "external",
+      "icon": "person",
+      "label": "Coding task",
+      "sublabel": "goal · constraints · scope",
+      "sources": [
+        {
+          "path": "skills/gohead/SKILL.md",
+          "line": 20,
+          "end_line": 31,
+          "label": "understand"
+        }
+      ]
+    },
+    {
+      "id": "understand",
+      "lane": "agent",
+      "col": 0,
+      "type": "backend",
+      "label": "Read the task",
+      "sublabel": "goal, constraints, ambiguity"
+    },
+    {
+      "id": "inspect",
+      "lane": "agent",
+      "col": 1,
+      "type": "backend",
+      "label": "Inspect the codebase",
+      "sublabel": "patterns, tests, conventions",
+      "sources": [
+        {
+          "path": "skills/gohead/SKILL.md",
+          "line": 33,
+          "end_line": 46,
+          "label": "inspect"
+        }
+      ]
+    },
+    {
+      "id": "code",
+      "lane": "repo",
+      "col": 2,
+      "type": "database",
+      "label": "Existing code",
+      "sublabel": "conventions to reuse",
+      "tag": "read-only"
+    },
+    {
+      "id": "decide",
+      "lane": "gate",
+      "col": 2,
+      "type": "security",
+      "icon": "decision",
+      "label": "Decide the change set",
+      "sublabel": "already done · partial · new",
+      "tag": "gate 1 + 2",
+      "sources": [
+        {
+          "path": "skills/gohead/SKILL.md",
+          "line": 33,
+          "end_line": 46,
+          "label": "classify"
+        },
+        {
+          "path": "skills/gohead/SKILL.md",
+          "line": 48,
+          "end_line": 64,
+          "label": "scope"
+        }
+      ]
+    },
+    {
+      "id": "already",
+      "lane": "blocked",
+      "col": 2,
+      "type": "external",
+      "icon": "success",
+      "label": "Report: nothing to change",
+      "sublabel": "says why, edits no file"
+    },
+    {
+      "id": "expand",
+      "lane": "blocked",
+      "col": 3,
+      "type": "security",
+      "icon": "stop",
+      "label": "Ask before expanding",
+      "sublabel": "unrelated issues reported, not fixed"
+    },
+    {
+      "id": "change",
+      "lane": "agent",
+      "col": 4,
+      "type": "backend",
+      "label": "Smallest change",
+      "sublabel": "reuse existing patterns",
+      "sources": [
+        {
+          "path": "skills/gohead/SKILL.md",
+          "line": 66,
+          "end_line": 71,
+          "label": "change"
+        }
+      ]
+    },
+    {
+      "id": "verify",
+      "lane": "gate",
+      "col": 5,
+      "type": "security",
+      "icon": "success",
+      "label": "Verify the result",
+      "sublabel": "run it, re-read the diff",
+      "tag": "gate 3",
+      "sources": [
+        {
+          "path": "skills/gohead/SKILL.md",
+          "line": 73,
+          "end_line": 84,
+          "label": "verify"
+        }
+      ]
+    },
+    {
+      "id": "report",
+      "lane": "request",
+      "col": 5,
+      "type": "external",
+      "label": "Final report",
+      "sublabel": "four fixed sections",
+      "sources": [
+        {
+          "path": "skills/gohead/SKILL.md",
+          "line": 111,
+          "end_line": 121,
+          "label": "final response"
+        }
+      ]
+    },
+    {
+      "id": "blocker",
+      "lane": "blocked",
+      "col": 5,
+      "type": "security",
+      "icon": "failure",
+      "label": "Blocker report",
+      "sublabel": "Blocker · Impact · Checked · Needed",
+      "sources": [
+        {
+          "path": "skills/gohead/SKILL.md",
+          "line": 86,
+          "end_line": 109,
+          "label": "blockers"
+        }
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "from": "task",
+      "to": "understand",
+      "label": "read",
+      "variant": "emphasis"
+    },
+    {
+      "from": "understand",
+      "to": "inspect",
+      "label": "enough context"
+    },
+    {
+      "from": "inspect",
+      "to": "code",
+      "label": "reads"
+    },
+    {
+      "from": "inspect",
+      "to": "decide",
+      "label": "state found",
+      "variant": "emphasis"
+    },
+    {
+      "from": "decide",
+      "to": "already",
+      "label": "already satisfied",
+      "role": "branch",
+      "variant": "dashed",
+      "route": "drop",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "from": "decide",
+      "to": "expand",
+      "label": "outside scope",
+      "role": "error",
+      "variant": "security"
+    },
+    {
+      "from": "decide",
+      "to": "change",
+      "label": "in scope",
+      "variant": "emphasis"
+    },
+    {
+      "from": "change",
+      "to": "verify",
+      "label": "then check",
+      "variant": "emphasis"
+    },
+    {
+      "from": "verify",
+      "to": "report",
+      "label": "passes",
+      "variant": "emphasis"
+    },
+    {
+      "from": "verify",
+      "to": "blocker",
+      "label": "cannot verify",
+      "role": "error",
+      "variant": "security"
+    },
+    {
+      "from": "verify",
+      "to": "change",
+      "label": "regression found",
+      "role": "return",
+      "variant": "dashed"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Three gates",
+      "items": [
+        "Gate 1 classifies before any edit: already done, partial, or new",
+        "Gate 2 names the change set before editing; anything else stays untouched",
+        "Gate 3 verifies the result before the word complete is used"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "What the tests caught",
+      "items": [
+        "already-done case: 0 files changed, the answer says it is already implemented",
+        "scope case: the decoy file with a pre-existing bug stayed untouched",
+        "stack case: scope held with caveman and ponytail loaded, 635-character answer"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "Never",
+      "items": [
+        "Never treat a discovered bug as permission to fix it",
+        "Never invent requirements the task did not state",
+        "Never work around a blocker with an out-of-scope change"
+      ]
+    }
+  ]
+}
