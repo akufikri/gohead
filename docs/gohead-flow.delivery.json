@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "8b484edf-5cbd-49ad-8e8e-77d436fde8d8",
+  "status": "current",
+  "command": "deliver",
+  "type": "workflow",
+  "input": "/Users/fikrinurhakim/dev/mylab/gohead-skills/docs/gohead-flow.workflow.json",
+  "output": "/Users/fikrinurhakim/dev/mylab/gohead-skills/docs/gohead-flow.html",
+  "specification": {
+    "sha256": "5ec2130e43532dabd44f4c8be021d9d545fc529b6b9c993db791161f30e68013",
+    "bytes": 7557
+  },
+  "artifact": {
+    "sha256": "57a88c5c7e5f97fe4c25f393a96e266cfb4ec5b302b64bd9e106e64cd5185e59",
+    "bytes": 852833
+  }
+}

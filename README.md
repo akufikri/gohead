@@ -4,7 +4,7 @@ Scope-first coding workflow for AI coding agents: understand the task, inspect t
 
 One skill, one file: [`skills/gohead/SKILL.md`](skills/gohead/SKILL.md).
 
-Version 1.0.0 · [Changelog](CHANGELOG.md) · [Releases](https://github.com/akufikri/gohead/releases)
+Version 1.1.0 · [Changelog](CHANGELOG.md) · [Releases](https://github.com/akufikri/gohead/releases)
 
 ## Why gohead exists
 
@@ -15,6 +15,41 @@ Agents usually fail coding tasks in three repeatable ways:
 3. After the adjustment nothing is re-checked, so "done" is claimed without evidence.
 
 gohead exists to steer the agent back onto those four steps: **understand, analyse, execute, verify**. Understand the request and the code it touches; analyse what is actually in scope; execute the smallest change that meets it; then check the result before reporting.
+
+## The flow
+
+[![gohead workflow: task, gates, change, verify, report](docs/assets/gohead-flow.png)](https://akufikri.github.io/gohead/gohead-flow.html)
+
+[Open the interactive version ↗](https://akufikri.github.io/gohead/gohead-flow.html)
+
+One task, three gates, two exits. The task is read and the codebase inspected before anything is decided. The decide gate classifies the task and names the change set — it is the gate that answers "already implemented" without editing a file, and the one that refuses a discovered bug as permission to widen the task. The change is the smallest one that meets the task, then verified. The verify gate either passes, sends the work back for a regression, or produces a blocker report instead of a false completion.
+
+## What it changes
+
+[![gohead impact: each gate and the behavioral case that proves it](docs/assets/gohead-impact.png)](https://akufikri.github.io/gohead/gohead-impact.html)
+
+[Open the interactive version ↗](https://akufikri.github.io/gohead/gohead-impact.html)
+
+| Observed on the test fixtures | Without gohead | With gohead |
+|---|---|---|
+| Report labels on a blocked task | 0 of 4 | 4 of 4, every sampled run |
+| Report labels on a short scoped edit | 0 of 4 | 2 of 4 sampled runs (about half) |
+| `already-done` task | not measured | 0 files changed, says it is already implemented |
+| Decoy file with a pre-existing bug | untouched | untouched |
+| Blocked task (missing credentials) | not measured | 0 files changed, Blocker / Impact / Checked / Needed |
+| Final answer length, stacked with caveman + ponytail | — | 635 characters |
+| Prompt cost | — | 4,415 B, about 1,104 tokens |
+
+Two limits are worth reading off that table instead of past it. On the trivial fixture the baseline agent also stayed in scope, so what the skill measurably adds there is the report contract, not scope discipline; `--compare` keeps that comparison visible. And the report contract itself is not fully reliable: on short edits this harness drops the section labels in roughly half the sampled runs, so the suite reports that rate as information and gates only the blocked-task format, which has held on every run.
+
+## Diagrams
+
+Both visuals are [Archify](https://github.com/tt-a1i/archify) diagrams, kept as typed JSON and rendered to standalone HTML, so they can be regenerated rather than redrawn:
+
+    node bin/archify.mjs finalize workflow docs/gohead-flow.workflow.json docs/gohead-flow.html --quality showcase
+    node bin/archify.mjs finalize architecture docs/gohead-impact.architecture.json docs/gohead-impact.html --quality showcase
+
+`docs/*.delivery.json` records the spec and artifact hashes; `./tests/run.sh --static` fails if an HTML file stops matching its receipt, so the shipped diagrams cannot drift from their sources.
 
 ## Install
 

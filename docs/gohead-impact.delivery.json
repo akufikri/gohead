@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "57633405-5dae-4036-af3c-47c828e8ccca",
+  "status": "current",
+  "command": "deliver",
+  "type": "architecture",
+  "input": "/Users/fikrinurhakim/dev/mylab/gohead-skills/docs/gohead-impact.architecture.json",
+  "output": "/Users/fikrinurhakim/dev/mylab/gohead-skills/docs/gohead-impact.html",
+  "specification": {
+    "sha256": "f1cb7d4a76d4e022fc9bc199a7714f00b5499212e36ff41f47ae75f0d0089341",
+    "bytes": 5180
+  },
+  "artifact": {
+    "sha256": "06b323ab006b020e54a198f9b09b61eb39d0234a6d2bba5f8b98b38e408fbb05",
+    "bytes": 845606
+  }
+}
