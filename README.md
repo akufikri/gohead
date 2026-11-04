@@ -4,6 +4,8 @@ Scope-first coding workflow for AI coding agents: understand the task, inspect t
 
 One skill, one file: [`skills/gohead/SKILL.md`](skills/gohead/SKILL.md).
 
+Version 1.0.0 · [Changelog](CHANGELOG.md) · [Releases](https://github.com/akufikri/gohead/releases)
+
 ## Why gohead exists
 
 Agents usually fail coding tasks in three repeatable ways:
