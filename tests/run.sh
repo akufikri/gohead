@@ -74,6 +74,16 @@ PY
     fail static-marketplace-json "invalid JSON"
   fi
 
+  # Release invariant: the manifest version must exist in CHANGELOG and README.
+  if python3 - "$REPO" <<'PY'
+import json, pathlib, sys
+root = pathlib.Path(sys.argv[1])
+ver = json.load(open(root / '.claude-plugin/marketplace.json'))['plugins'][0]['version']
+assert f'## [{ver}]' in (root / 'CHANGELOG.md').read_text(encoding='utf-8'), f'CHANGELOG has no {ver} section'
+assert f'Version {ver}' in (root / 'README.md').read_text(encoding='utf-8'), f'README does not state {ver}'
+PY
+  then pass static-version-consistent; else fail static-version-consistent "version drift between manifest, CHANGELOG, README"; fi
+
   # Cost of the stack: gohead plus every third-party skill that will be appended.
   local total=0 size f
   size=$(wc -c < "$SKILL")
