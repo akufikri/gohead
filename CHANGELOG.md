@@ -5,6 +5,30 @@ All notable changes to this project are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.3] - 2026-11-05
+
+### Changed
+
+- Dropped the skills.sh badge from the README. The badge endpoint answers
+  `resource not found` for a repo the directory has not indexed yet, so it
+  rendered as a broken image; the listing card and the install command stay.
+- README states the actual state of distribution: the repo page, the audit and
+  `npx skills add akufikri/gohead` work immediately, while search coverage on
+  skills.sh follows install telemetry and lags behind. There is no submission
+  step.
+- `docs/assets/skills-sh.png` re-captured, now showing the first recorded
+  install instead of zero.
+
+### Verified
+
+- `npx skills add akufikri/gohead --list` → `Found 1 skill: gohead`.
+- `https://www.skills.sh/akufikri/gohead` → `1 skill`, `1 total installs`.
+- `https://www.skills.sh/tele/audit?source=akufikri/gohead&skills=gohead` →
+  `ath: safe`, `socket: 90`, `snyk: low`.
+- `https://skills.sh/api/search?q=gohead` → `count 0` (index not caught up),
+  and `https://skills.sh/b/akufikri/gohead` → `resource not found`, which is the
+  same lag seen from the other side.
+
 ## [1.1.2] - 2026-11-05
 
 ### Added
