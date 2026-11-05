@@ -5,6 +5,21 @@ All notable changes to this project are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.1] - 2026-11-05
+
+### Added
+
+- skills.sh distribution: the repo is installable with `npx skills add akufikri/gohead`
+  and carries the skills.sh badge. There is no submission step in that
+  directory — a public repo with `skills/SKILL.md` is installable immediately,
+  and the listing follows from install telemetry.
+
+### Fixed
+
+- `docs/gohead-flow.workflow.json`: the `Smallest change` node now sets an
+  explicit height, so its sublabel is no longer clipped by the node border.
+  Diagram re-rendered and re-captured; `static-diagram-provenance` still passes.
+
 ## [1.1.0] - 2026-11-05
 
 ### Added

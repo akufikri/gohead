@@ -4,7 +4,9 @@ Scope-first coding workflow for AI coding agents: understand the task, inspect t
 
 One skill, one file: [`skills/gohead/SKILL.md`](skills/gohead/SKILL.md).
 
-Version 1.1.0 · [Changelog](CHANGELOG.md) · [Releases](https://github.com/akufikri/gohead/releases)
+Version 1.1.1 · [Changelog](CHANGELOG.md) · [Releases](https://github.com/akufikri/gohead/releases)
+
+[![skills.sh](https://skills.sh/b/akufikri/gohead)](https://skills.sh/akufikri/gohead)
 
 ## Why gohead exists
 
@@ -52,6 +54,14 @@ Both visuals are [Archify](https://github.com/tt-a1i/archify) diagrams, kept as 
 `docs/*.delivery.json` records the spec and artifact hashes; `./tests/run.sh --static` fails if an HTML file stops matching its receipt, so the shipped diagrams cannot drift from their sources.
 
 ## Install
+
+### skills CLI
+
+    npx skills add akufikri/gohead
+
+Installs `gohead` into the agent you pick, from the same command used across the [skills.sh](https://skills.sh) ecosystem.
+
+### Symlink installer
 
     git clone https://github.com/akufikri/gohead.git
     cd gohead
