@@ -4,9 +4,7 @@ Scope-first coding workflow for AI coding agents: understand the task, inspect t
 
 One skill, one file: [`skills/gohead/SKILL.md`](skills/gohead/SKILL.md).
 
-Version 1.1.2 · [Changelog](CHANGELOG.md) · [Releases](https://github.com/akufikri/gohead/releases)
-
-[![skills.sh](https://skills.sh/b/akufikri/gohead)](https://skills.sh/akufikri/gohead)
+Version 1.1.3 · [Changelog](CHANGELOG.md) · [Releases](https://github.com/akufikri/gohead/releases)
 
 ## Why gohead exists
 
@@ -62,6 +60,8 @@ Both visuals are [Archify](https://github.com/tt-a1i/archify) diagrams, kept as 
 [![akufikri/gohead on skills.sh](docs/assets/skills-sh.png)](https://skills.sh/akufikri/gohead)
 
 Installs `gohead` into the agent you pick, from the same command used across the [skills.sh](https://skills.sh) ecosystem.
+
+The repo page and the CLI install work immediately. Search coverage on skills.sh (`?q=gohead`, and the badge endpoint) fills from install telemetry, so it lags behind until the directory's index catches up — there is no submission step to speed it up.
 
 ### Symlink installer
 
