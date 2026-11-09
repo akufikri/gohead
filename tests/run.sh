@@ -59,7 +59,8 @@ fm = yaml.safe_load(src.split('---')[1])
 for key in ('name', 'description', 'argument-hint'):
     assert key in fm, f'missing frontmatter key: {key}'
 assert fm['name'] == 'gohead', f"name is {fm['name']!r}"
-for heading in ('## 1. Understand the task', '## 3. Keep changes within scope',
+for heading in ('## 1. Understand the task', '### Ambiguity',
+                '## 3. Keep changes within scope',
                 '## 5. Verify the result', '## Blockers', '## Final response'):
     assert heading in src, f'missing heading: {heading}'
 for bad in ('TODO', 'FIXME', '<insert'):

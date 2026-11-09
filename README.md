@@ -4,7 +4,7 @@ Scope-first coding workflow for AI coding agents: understand the task, inspect t
 
 One skill, one file: [`skills/gohead/SKILL.md`](skills/gohead/SKILL.md).
 
-Version 1.1.3 · [Changelog](CHANGELOG.md) · [Releases](https://github.com/akufikri/gohead/releases)
+Version 1.1.4 · [Changelog](CHANGELOG.md) · [Releases](https://github.com/akufikri/gohead/releases)
 
 ## Why gohead exists
 
@@ -87,6 +87,7 @@ Say `Gohead`, or ask for a scoped coding change. Invoked as a command it takes a
 ## What it enforces
 
 - Understand goal, in-scope behavior and constraints before editing.
+- Separate material ambiguity (stop and ask, naming the competing readings) from minor ambiguity (proceed on the stated assumption) — never by widening the task.
 - Inspect existing code and conventions; reuse them instead of adding abstractions.
 - Change only code the task needs — no drive-by fixes, cleanup, or refactors.
 - Report blockers as **Blocker / Impact / Checked / Needed** instead of guessing.
