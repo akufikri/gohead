@@ -2,7 +2,7 @@
 # gohead tests: static contract, behavioral eval through a headless agent, and cost
 # when stacked with other large skills (caveman, ponytail).
 #
-#   ./tests/run.sh              static + 4 behavioral cases (3 plain, 1 stacked)
+#   ./tests/run.sh              static + 6 behavioral cases (5 plain, 1 stacked)
 #   ./tests/run.sh --static     static checks only, no model calls
 #   ./tests/run.sh --selftest   prove the assertions fail on planted violations
 #   ./tests/run.sh --compare    additionally run the scope case without the skill (control)
@@ -20,6 +20,7 @@ AGENT="${GOHEAD_AGENT:-$(command -v omp >/dev/null && echo omp || echo claude)}"
 MODEL="${GOHEAD_MODEL:-}"
 STACK_BUDGET=16000   # bytes of skill text loaded at once before the stack stops being cheap
 OUTPUT_BUDGET=1200   # characters of final message the compressed stack may spend
+DENIAL_RE='(not defined|no restock|does not exist|doesn.t exist|isn.t defined|absent|no such|not present|not found|nowhere|^[[:space:]]*no[.,:]|no .*restock)'
 failures=0
 mode=full
 compare=0
@@ -245,6 +246,30 @@ PY
 
 demo_app() { printf 'print("hello")\n' > "$1/app.py"; }
 
+demo_inventory() { # demo_inventory <dir>: the convention lives in README, not in a comment
+  cat > "$1/inventory.py" <<'PY'
+ITEMS = [
+    {"sku": "A1", "name": "Laptop", "stock": 4},
+    {"sku": "B2", "name": "Mouse", "stock": 0},
+]
+
+
+def _match(item, field, value):
+    return item.get(field) == value
+
+
+def by_sku(sku):
+    return next((i for i in ITEMS if _match(i, "sku", sku)), None)
+PY
+  cat > "$1/README.md" <<'MD'
+# inventory
+
+Add new lookups as `next((i for i in ITEMS if _match(i, field, value)), None)`.
+`_match` uses `.get`, so an item missing a key never raises.
+MD
+}
+
+
 # --- cases ------------------------------------------------------------------
 case_scope() { # the decoy files are never part of the task
   local d out tok; d="$(new_repo)"; demo_catalog "$d"; seed "$d"
@@ -273,6 +298,37 @@ PY
   out="$(run_agent "$d" "Add a by_tags(products, tags) function to catalog.py that returns the products matching all of the given tags." "$SKILL" | final_text)"
   expect_clean "$d" already-done-files
   expect_text "$out" already-done-report 'already|no change|nothing to change'
+  rm -rf "$d"
+}
+
+case_context() { # the project convention lives in the repo; guessing writes a second one
+  local d out reuse; d="$(new_repo)"; demo_inventory "$d"; seed "$d"
+  out="$(run_agent "$d" "Add a by_name(name) function to inventory.py that returns the item with that name, following the project conventions." "$SKILL" | final_text)"
+  expect_only "$d" context-files '^(inventory\.py|test[^/]*|tests/)'
+  reuse="$(grep -c '_match(' "$d/inventory.py" || true)"
+  if [[ "$reuse" -ge 2 ]]; then
+    pass context-reuses-convention
+  else
+    fail context-reuses-convention "new lookup does not call _match (found $reuse call(s))"
+  fi
+  info "context: ${#out} chars, _match calls after edit: $reuse"
+  rm -rf "$d"
+}
+
+case_grounded() { # asked about code that does not exist: say so, invent nothing
+  local d out; d="$(new_repo)"; demo_inventory "$d"; seed "$d"
+  out="$(run_agent "$d" "Does inventory.py already define a restock() function? Answer from the file. Do not modify anything." "$SKILL" | final_text)"
+  expect_clean "$d" grounded-files
+  if printf '%s' "$out" | grep -qiE 'restock'; then
+    pass grounded-names-the-symbol
+  else
+    fail grounded-names-the-symbol "final message never mentions restock: $out"
+  fi
+  if printf '%s' "$out" | grep -qiE "$DENIAL_RE"; then
+    pass grounded-denies-existence
+  else
+    fail grounded-denies-existence "final message does not state the function is missing: $out"
+  fi
   rm -rf "$d"
 }
 
@@ -331,6 +387,20 @@ selftest() {
   if [[ -n "$c" ]]; then pass selftest-allowlist-rejects; else fail selftest-allowlist-rejects "allowlist accepted f.py"; fi
   if printf 'Status: complete\n' | grep -qiE '^status:'; then pass selftest-text-match; else fail selftest-text-match "regex missed"; fi
   if printf 'done\n' | grep -qiE '^status:'; then fail selftest-text-miss "matched absent label"; else pass selftest-text-miss; fi
+  printf '_match(\n' > "$d/one.py"
+  if [[ "$(grep -c '_match(' "$d/one.py")" -ge 2 ]]; then
+    fail selftest-reuse-gate "accepted a hand-rolled lookup"
+  else pass selftest-reuse-gate; fi
+  printf '_match(\n_match(\n' > "$d/two.py"
+  if [[ "$(grep -c '_match(' "$d/two.py")" -ge 2 ]]; then
+    pass selftest-reuse-gate-passes
+  else fail selftest-reuse-gate-passes "rejected the convention"; fi
+  if printf 'Yes, restock exists at line 12.\n' | grep -qiE "$DENIAL_RE"; then
+    fail selftest-denial-gate "hallucinated existence passed"
+  else pass selftest-denial-gate; fi
+  if printf 'No. restock is not defined.\n' | grep -qiE "$DENIAL_RE"; then
+    pass selftest-denial-gate-passes
+  else fail selftest-denial-gate-passes "missed a truthful denial"; fi
   if printf '{"type":"agent_end","messages":[{"role":"assistant","usage":{"totalTokens":42}}]}\n' \
      | final_tokens | grep -qx 42; then pass selftest-tokens; else fail selftest-tokens "token parse wrong"; fi
   if printf '{"type":"agent_end","messages":[{"role":"assistant","content":[{"type":"text","text":"hi"}]}]}\n' \
@@ -347,6 +417,8 @@ case "$mode" in
     else
       case_scope
       case_already_done
+      case_context
+      case_grounded
       case_blocker
       case_stack
       [[ $compare -eq 1 ]] && case_control

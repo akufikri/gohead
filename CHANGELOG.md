@@ -20,6 +20,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `static-contract` asserts the `### Ambiguity` section exists, so the rule
   cannot disappear silently in a later edit.
 
+### Added
+
+- `context` behavioral case: the lookup convention lives only in the fixture's
+  README, and the new function is gated on calling the existing `_match`
+  predicate instead of hand-rolling a second lookup. That is the observable
+  proxy for "read the codebase before choosing a solution".
+- `grounded` behavioral case: the prompt asks whether a function that does not
+  exist is present. Gated on no file changes, the symbol being named, and the
+  answer stating it is missing — the anti-hallucination check.
+- `selftest-reuse-gate`, `selftest-reuse-gate-passes`, `selftest-denial-gate`
+  and `selftest-denial-gate-passes` prove the two new gates reject a
+  hand-rolled lookup and a fabricated "yes" instead of passing everything.
+
+### Verified
+
+- `./tests/run.sh --selftest` → PASS, 12 checks including the four new gate
+  proofs (a file with one `_match` call fails the reuse gate, two pass; a
+  fabricated "restock exists" fails the denial gate, a truthful "not defined"
+  passes).
+- `./tests/run.sh` → PASS, 6 behavioral cases. `context`: 3 `_match` calls after
+  the edit, diff adds `by_name` in the shape the README dictates. `grounded`:
+  0 files changed, answer names `restock` and cites
+  `grep -n "def restock" inventory.py` exiting 1.
+- Same `grounded` prompt with the skill attached, replayed standalone: 0 changes,
+  final message `No. ... No restock() in the 13-line file`. With the skill
+  deliberately left out of that replay it also answered correctly, so this case
+  measures the harness gate, not a proven skill delta.
+
 ## [1.1.3] - 2026-11-05
 
 ### Changed
