@@ -106,7 +106,7 @@ Each behavioral case runs a headless agent in a throwaway git repo and judges on
 |---|---|
 | `scope` | The edit stays inside the asked-for file; the decoy file with a pre-existing bug is untouched; the report uses `Status:` / `Changes:`. |
 | `already-done` | A task whose behavior already exists produces no file changes and says so. |
-| `context` | The lookup convention stated only in the fixture's README is read and reused: the new function calls the existing `_match` predicate instead of hand-rolling a second one. |
+| `context` | The lookup rule lives only in the fixture's README (case-insensitive, never raise on a missing field), and one item lacks the field name. Gated on behaviour: `by_name("MOUSE")` must find the item and a missing name must return `None`, which a hand-rolled `==` lookup cannot pass. |
 | `grounded` | Asked whether a function that does not exist is present, the answer names it and states it is missing; no file is touched and nothing is invented. |
 | `blocker` | Missing inputs are reported as `Blocker / Impact / Checked / Needed`, and nothing is invented. |
 | `stack` | Loaded together with the installed `caveman` and `ponytail` skills, the edit still stays in scope and the final message stays under 1200 characters. |

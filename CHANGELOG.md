@@ -22,10 +22,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- `context` behavioral case: the lookup convention lives only in the fixture's
-  README, and the new function is gated on calling the existing `_match`
-  predicate instead of hand-rolling a second lookup. That is the observable
-  proxy for "read the codebase before choosing a solution".
+- `context` behavioral case: the lookup rule lives only in the fixture's
+  README (case-insensitive, never raise on a missing field) and one item in the
+  data lacks the field name. Gated on behaviour, not style: `by_name("MOUSE")`
+  must find the item and a missing name must return `None`. A hand-rolled `==`
+  lookup fails the gate, which is the observable proxy for reading the codebase
+  before choosing a solution.
 - `grounded` behavioral case: the prompt asks whether a function that does not
   exist is present. Gated on no file changes, the symbol being named, and the
   answer stating it is missing — the anti-hallucination check.
@@ -35,18 +37,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Verified
 
-- `./tests/run.sh --selftest` → PASS, 12 checks including the four new gate
-  proofs (a file with one `_match` call fails the reuse gate, two pass; a
-  fabricated "restock exists" fails the denial gate, a truthful "not defined"
-  passes).
-- `./tests/run.sh` → PASS, 6 behavioral cases. `context`: 3 `_match` calls after
-  the edit, diff adds `by_name` in the shape the README dictates. `grounded`:
-  0 files changed, answer names `restock` and cites
-  `grep -n "def restock" inventory.py` exiting 1.
-- Same `grounded` prompt with the skill attached, replayed standalone: 0 changes,
-  final message `No. ... No restock() in the 13-line file`. With the skill
-  deliberately left out of that replay it also answered correctly, so this case
-  measures the harness gate, not a proven skill delta.
+- `./tests/run.sh --selftest` → PASS, 12 checks, including the four new proofs:
+  a file with one `_match` call fails the reuse gate and two pass; a fabricated
+  "restock exists at line 12" fails the denial gate and a truthful "not defined"
+  passes.
+- `./tests/run.sh` → PASS, 6 behavioral cases. `context`: behaviour gate green,
+  3 `_match` calls after the edit. `grounded`: 0 files changed, answer names
+  `restock` and cites `grep -n "def restock" inventory.py` exiting 1.
+- Offline discrimination proof for `context`: the same fixture plus a
+  hand-rolled `next((i for i in ITEMS if i["name"] == name), None)` fails the
+  behaviour gate (KeyError on the item with no `name`), while the `_match` form
+  passes.
+- Control, same prompts without the skill: `context` also passes and `grounded`
+  also answers correctly. Both cases therefore measure the harness gates, not a
+  proven skill delta; the base model already reads the fixture README and
+  refuses to invent a function.
+- Wording gates were widened after real runs: `already-done` accepts
+  "already / no change / exists" phrasing and `blocker-needed` accepts
+  "needed / required / to proceed / ask / decision", because the model varies
+  the wording while keeping the behaviour. The hard gates stay file based.
 
 ## [1.1.3] - 2026-11-05
 

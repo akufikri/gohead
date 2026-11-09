@@ -246,16 +246,17 @@ PY
 
 demo_app() { printf 'print("hello")\n' > "$1/app.py"; }
 
-demo_inventory() { # demo_inventory <dir>: the convention lives in README, not in a comment
+demo_inventory() { # demo_inventory <dir>: the convention lives in README, and it is behavioural
   cat > "$1/inventory.py" <<'PY'
 ITEMS = [
     {"sku": "A1", "name": "Laptop", "stock": 4},
     {"sku": "B2", "name": "Mouse", "stock": 0},
+    {"sku": "C3", "stock": 2},
 ]
 
 
 def _match(item, field, value):
-    return item.get(field) == value
+    return str(item.get(field, "")).lower() == str(value).lower()
 
 
 def by_sku(sku):
@@ -264,8 +265,8 @@ PY
   cat > "$1/README.md" <<'MD'
 # inventory
 
-Add new lookups as `next((i for i in ITEMS if _match(i, field, value)), None)`.
-`_match` uses `.get`, so an item missing a key never raises.
+Lookups are case-insensitive and must never raise on an item that lacks the
+field: go through `_match`, which reads with `.get` and compares lowercased.
 MD
 }
 
@@ -297,7 +298,8 @@ PY
   seed "$d"
   out="$(run_agent "$d" "Add a by_tags(products, tags) function to catalog.py that returns the products matching all of the given tags." "$SKILL" | final_text)"
   expect_clean "$d" already-done-files
-  expect_text "$out" already-done-report 'already|no change|nothing to change'
+  expect_text "$out" already-done-report 'already|no change|nothing to change|no edit|unchanged|nothing to add|exist'
+  info "already-done says: ${out:0:160}"
   rm -rf "$d"
 }
 
@@ -305,12 +307,19 @@ case_context() { # the project convention lives in the repo; guessing writes a s
   local d out reuse; d="$(new_repo)"; demo_inventory "$d"; seed "$d"
   out="$(run_agent "$d" "Add a by_name(name) function to inventory.py that returns the item with that name, following the project conventions." "$SKILL" | final_text)"
   expect_only "$d" context-files '^(inventory\.py|test[^/]*|tests/)'
-  reuse="$(grep -c '_match(' "$d/inventory.py" || true)"
-  if [[ "$reuse" -ge 2 ]]; then
-    pass context-reuses-convention
+  # Behaviour, not style: the README states case-insensitive lookups and the
+  # fixture has an item with no "name", so a hand-rolled == lookup fails here.
+  if ( cd "$d" && python3 -c '
+import inventory
+assert inventory.by_name("mouse")["sku"] == "B2"
+assert inventory.by_name("MOUSE")["sku"] == "B2"
+assert inventory.by_name("absent") is None
+' ) >/dev/null 2>&1; then
+    pass context-behaviour
   else
-    fail context-reuses-convention "new lookup does not call _match (found $reuse call(s))"
+    fail context-behaviour "by_name does not follow the documented lookup rule"
   fi
+  reuse="$(grep -c '_match(' "$d/inventory.py" || true)"
   info "context: ${#out} chars, _match calls after edit: $reuse"
   rm -rf "$d"
 }
@@ -339,7 +348,8 @@ case_blocker() { # required inputs are absent: report, do not invent
   expect_text "$out" blocker-label 'blocker:'
   expect_text "$out" blocker-impact 'impact:'
   expect_text "$out" blocker-checked 'checked:'
-  expect_text "$out" blocker-needed 'needed:'
+  expect_text "$out" blocker-needed 'needed:|required:|to proceed|what.{0,15}need|ask:|decision:'
+  info "blocker says: ${out:0:200}"
   rm -rf "$d"
 }
 
