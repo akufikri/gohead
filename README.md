@@ -1,6 +1,8 @@
-# gohead
+# Gohead 
 
 Scope-first coding workflow for AI coding agents: understand the task, inspect the codebase, change only what the task needs, report blockers plainly, verify the result.
+
+<img width="1671" height="941" alt="Gohead Workflow in Monochrome" src="https://github.com/user-attachments/assets/7fb57ece-d648-4dfc-b89e-963929d17659" />
 
 One skill, one file: [`skills/gohead/SKILL.md`](skills/gohead/SKILL.md).
 
