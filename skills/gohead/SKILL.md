@@ -26,9 +26,19 @@ Before making changes, identify:
 - Any constraints or explicit instructions.
 - Any ambiguity that could materially change the implementation.
 
-Do not invent extra requirements. Ask for clarification when an ambiguity could
-lead to a substantially different solution. Otherwise, use a reasonable
-assumption and state it if it affects the result.
+### Ambiguity
+
+Two tiers, decided before the first edit:
+
+- **Material ambiguity** — the reading changes the design, the files, or an
+  interface. Stop and ask. Name the competing readings and the one you would
+  pick by default.
+- **Minor ambiguity** — the reading only affects detail. Proceed on the most
+  reasonable assumption and state it in the final response.
+
+Do not invent extra requirements. Do not resolve ambiguity by widening the
+task. If the missing decision blocks a safe change, report it with the
+**Blockers** format instead of guessing.
 
 ## 2. Inspect the codebase
 

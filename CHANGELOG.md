@@ -5,6 +5,58 @@ All notable changes to this project are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.4] - 2026-11-09
+
+### Changed
+
+- Ambiguity handling is now an explicit section instead of a sentence spread
+  over two paragraphs. The skill splits it into two tiers decided before the
+  first edit: material ambiguity (the reading changes the design, the files or
+  an interface — stop and ask, naming the competing readings) and minor
+  ambiguity (proceed on the most reasonable assumption and state it in the
+  final response). Resolving ambiguity by widening the task stays forbidden,
+  and a decision that blocks a safe change goes through the Blockers format.
+- README's enforcement list states the same rule.
+- `static-contract` asserts the `### Ambiguity` section exists, so the rule
+  cannot disappear silently in a later edit.
+
+### Added
+
+- `context` behavioral case: the lookup rule lives only in the fixture's
+  README (case-insensitive, never raise on a missing field) and one item in the
+  data lacks the field name. Gated on behaviour, not style: `by_name("MOUSE")`
+  must find the item and a missing name must return `None`. A hand-rolled `==`
+  lookup fails the gate, which is the observable proxy for reading the codebase
+  before choosing a solution.
+- `grounded` behavioral case: the prompt asks whether a function that does not
+  exist is present. Gated on no file changes, the symbol being named, and the
+  answer stating it is missing — the anti-hallucination check.
+- `selftest-reuse-gate`, `selftest-reuse-gate-passes`, `selftest-denial-gate`
+  and `selftest-denial-gate-passes` prove the two new gates reject a
+  hand-rolled lookup and a fabricated "yes" instead of passing everything.
+
+### Verified
+
+- `./tests/run.sh --selftest` → PASS, 12 checks, including the four new proofs:
+  a file with one `_match` call fails the reuse gate and two pass; a fabricated
+  "restock exists at line 12" fails the denial gate and a truthful "not defined"
+  passes.
+- `./tests/run.sh` → PASS, 6 behavioral cases. `context`: behaviour gate green,
+  3 `_match` calls after the edit. `grounded`: 0 files changed, answer names
+  `restock` and cites `grep -n "def restock" inventory.py` exiting 1.
+- Offline discrimination proof for `context`: the same fixture plus a
+  hand-rolled `next((i for i in ITEMS if i["name"] == name), None)` fails the
+  behaviour gate (KeyError on the item with no `name`), while the `_match` form
+  passes.
+- Control, same prompts without the skill: `context` also passes and `grounded`
+  also answers correctly. Both cases therefore measure the harness gates, not a
+  proven skill delta; the base model already reads the fixture README and
+  refuses to invent a function.
+- Wording gates were widened after real runs: `already-done` accepts
+  "already / no change / exists" phrasing and `blocker-needed` accepts
+  "needed / required / to proceed / ask / decision", because the model varies
+  the wording while keeping the behaviour. The hard gates stay file based.
+
 ## [1.1.3] - 2026-11-05
 
 ### Changed
