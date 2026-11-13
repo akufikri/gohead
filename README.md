@@ -1,5 +1,7 @@
 # Gohead 
 
+<a href="https://www.producthunt.com/products/gohead?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-gohead" target="_blank" rel="noopener noreferrer"><img alt="Gohead - Scope-first coding workflow | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1311923&amp;theme=dark&amp;t=1794557811257"></a>
+
 Scope-first coding workflow for AI coding agents: understand the task, inspect the codebase, change only what the task needs, report blockers plainly, verify the result.
 
 <img width="1671" height="941" alt="Gohead Workflow in Monochrome" src="https://github.com/user-attachments/assets/7fb57ece-d648-4dfc-b89e-963929d17659" />
